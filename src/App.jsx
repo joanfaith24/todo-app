@@ -1,14 +1,22 @@
-import { useState } from 'react'
+import { useState , useEffect} from 'react'
 import TodoForm from './components/TodoForm'
 import TodoList from './components/TodoList'
 
+
 function App() {
-  const [todos, setTodos] = useState([]);
+const [todos, setTodos] = useState(() => {
+    const saved = localStorage.getItem("todos");
+    return saved ? JSON.parse(saved) : [];
+});
   const [input, setInput] = useState("");
   const [date, setDate] = useState(null);
   const [repeat, setRepeat] = useState("none");
   const [showDeletePrompt, setShowDeletePrompt] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+
+useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+}, [todos]);
 
   function handleAdd() {
     if(input.trim() === "") return;
@@ -23,6 +31,8 @@ function App() {
     setDate(null);
     setRepeat("none");
   }
+
+
 
   function handleDeletePrompt(id) {
     setDeleteId(id);
