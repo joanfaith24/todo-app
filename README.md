@@ -15,5 +15,8 @@ A simple To-Do App built with React and Tailwind CSS.
 - React DatePicker
 - Vite
 
+## Live Demo
+https://fluffy-fox-e5912b.netlify.app/
+
 ## Author
 Joan Faith
