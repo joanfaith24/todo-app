@@ -1,25 +1,25 @@
-import { useState , useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import TodoForm from './components/TodoForm'
 import TodoList from './components/TodoList'
 
-
 function App() {
-const [todos, setTodos] = useState(() => {
+  const [todos, setTodos] = useState(() => {
     const saved = localStorage.getItem("todos");
     return saved ? JSON.parse(saved) : [];
-});
+  });
   const [input, setInput] = useState("");
   const [date, setDate] = useState(null);
   const [repeat, setRepeat] = useState("none");
   const [showDeletePrompt, setShowDeletePrompt] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [showDeleted, setShowDeleted] = useState(false); // ← new
 
-useEffect(() => {
+  useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
-}, [todos]);
+  }, [todos]);
 
   function handleAdd() {
-    if(input.trim() === "") return;
+    if (input.trim() === "") return;
     setTodos([...todos, {
       id: Date.now(),
       text: input,
@@ -32,8 +32,6 @@ useEffect(() => {
     setRepeat("none");
   }
 
-
-
   function handleDeletePrompt(id) {
     setDeleteId(id);
     setShowDeletePrompt(true);
@@ -43,6 +41,9 @@ useEffect(() => {
     setTodos(todos.filter(todo => todo.id !== deleteId));
     setShowDeletePrompt(false);
     setDeleteId(null);
+    // Show success popup then auto-hide after 2 seconds
+    setShowDeleted(true);
+    setTimeout(() => setShowDeleted(false), 2000);
   }
 
   function handleCancelDelete() {
@@ -56,11 +57,11 @@ useEffect(() => {
     ));
   }
 
-function handleEdit(id, newText, newDate, newRepeat) {
+  function handleEdit(id, newText, newDate, newRepeat) {
     setTodos(todos.map(todo =>
-        todo.id === id ? { ...todo, text: newText, date: newDate, repeat: newRepeat } : todo
+      todo.id === id ? { ...todo, text: newText, date: newDate, repeat: newRepeat } : todo
     ));
-}
+  }
 
   const activeTodos = todos.filter(todo => !todo.completed);
   const completedTodos = todos.filter(todo => todo.completed);
@@ -109,9 +110,9 @@ function handleEdit(id, newText, newDate, newRepeat) {
           </div>
         )}
 
-        {/* Delete Prompt */}
+        {/* Delete Confirmation Prompt */}
         {showDeletePrompt && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-2xl shadow-2xl p-8 w-80 text-center">
               <h2 className="text-xl font-bold text-gray-800 mb-2">Delete Task?</h2>
               <p className="text-gray-500 mb-6">Are you sure you want to delete this task? This cannot be undone.</p>
@@ -127,6 +128,17 @@ function handleEdit(id, newText, newDate, newRepeat) {
                   Delete
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── DELETED SUCCESS POPUP ── */}
+        {showDeleted && (
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 w-72 text-center animate-bounce-once">
+              <div className="text-5xl mb-3">🗑️</div>
+              <h2 className="text-xl font-bold text-gray-800 mb-1">Deleted!</h2>
+              <p className="text-gray-400 text-sm">The task has been removed successfully.</p>
             </div>
           </div>
         )}
