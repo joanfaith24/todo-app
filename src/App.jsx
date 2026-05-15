@@ -72,7 +72,7 @@ function handleEdit(id, newText, newDate, newRepeat) {
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6">
           <h1 className="text-3xl font-bold text-center text-blue-500 mb-6">
-            To-Do App 📝
+            My Daily Planner 📝
           </h1>
           <TodoForm
             onAdd={handleAdd}
